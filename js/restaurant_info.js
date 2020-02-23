@@ -22,7 +22,7 @@ initMap = () => {
         scrollWheelZoom: false
       });
       L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
-        mapboxToken: '<your MAPBOX API KEY HERE>',
+        mapboxToken: 'pk.eyJ1Ijoic21yYXphbiIsImEiOiJjazZwM3VsOXkwcWpiM2xxcDh5cXhwMnptIn0.MR2_V0cg1SDuNu6A--mViw',
         maxZoom: 18,
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
           '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
@@ -82,13 +82,15 @@ fetchRestaurantFromURL = (callback) => {
 fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
-
+  
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
 
   const image = document.getElementById('restaurant-img');
-  image.className = 'restaurant-img'
+  image.className = 'restaurant-img';
+  image.alt = `Image of ${restaurant.name} Restaurant`;
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
+
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -128,6 +130,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
+  title.setAttribute('tabindex', '0');
   container.appendChild(title);
 
   if (!reviews) {
@@ -192,3 +195,12 @@ getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+
+// Register service worker only if supported
+if (navigator.serviceWorker) {
+	navigator.serviceWorker.register('/sw.js').then(function(reg) {
+	  console.log("Registration worked!");
+	}).catch((e) => {
+	  console.log("Registration failed!", e);
+	});
+  }

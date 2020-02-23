@@ -78,7 +78,7 @@ initMap = () => {
         scrollWheelZoom: false
       });
   L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
-    mapboxToken: '<your MAPBOX API KEY HERE>',
+    mapboxToken: 'pk.eyJ1Ijoic21yYXphbiIsImEiOiJjazZwM3VsOXkwcWpiM2xxcDh5cXhwMnptIn0.MR2_V0cg1SDuNu6A--mViw',
     maxZoom: 18,
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
       '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
@@ -160,11 +160,13 @@ createRestaurantHTML = (restaurant) => {
 
   const image = document.createElement('img');
   image.className = 'restaurant-img';
+  image.alt = `Image of ${restaurant.name} Restaurant`;
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
   li.append(image);
 
   const name = document.createElement('h1');
   name.innerHTML = restaurant.name;
+  name.setAttribute('tabindex', '0');
   li.append(name);
 
   const neighborhood = document.createElement('p');
@@ -177,6 +179,7 @@ createRestaurantHTML = (restaurant) => {
 
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
+  more.setAttribute('aria-label', `View details about ${restaurant.name} Restaurant`);
   more.href = DBHelper.urlForRestaurant(restaurant);
   li.append(more)
 
@@ -198,14 +201,14 @@ addMarkersToMap = (restaurants = self.restaurants) => {
   });
 
 } 
-/* addMarkersToMap = (restaurants = self.restaurants) => {
-  restaurants.forEach(restaurant => {
-    // Add marker to the map
-    const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
-    google.maps.event.addListener(marker, 'click', () => {
-      window.location.href = marker.url
-    });
-    self.markers.push(marker);
-  });
-} */
+
+// Register service worker only if supported
+if (navigator.serviceWorker) {
+	navigator.serviceWorker.register('/sw.js').then(function(reg) {
+	  console.log("Registration worked!");
+	}).catch((e) => {
+	  console.log("Registration failed!", e);
+	});
+  }
+
 
